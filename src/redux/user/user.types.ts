@@ -45,6 +45,7 @@ export interface User {
   studentProfile?: StudentProfile;
   advisorProfile?: AdvisorProfile;
   librarianProfile?: LibrarianProfile;
+  dateJoined?: string;
 }
 
 export interface MentorProfile {

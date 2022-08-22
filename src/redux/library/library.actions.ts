@@ -531,13 +531,17 @@ export function* watchGetLibraryMentors() {
 function* handleGetLibraryMentors(action: GetLibraryMentorsAction) {
   try {
     const url = `library/all-mentors/${action.uniqueID}`;
+    yield put(apiRequest(action.uniqueID));
     const res: AxiosResponse<any> = yield vbbAPIV1.get<any>(url);
     if (res.status >= 200 && res.status < 300) {
+      yield put(apiSuccessful(res.data));
       yield put(setLibraryMentors(res.data));
     } else {
       console.error('Error getting library mentors');
+      yield put(apiFailed(res.data));
     }
-  } catch (e) {
+  } catch (e:any) {
+    yield put(apiFailed(e.response.data));
     console.error('Failed to get library mentors', { e });
   }
 }
@@ -1336,6 +1340,8 @@ function* handleCreateLibraryTimeSlot(
   try {
     const data = action.payload;
     yield put(apiRequest(data));
+    console.log(data)
+
     const url = `library-slots/`;
     const res: AxiosResponse<any> = yield vbbAPIV1.post<any>(url, data);
     if (res.status >= 200 && res.status < 300) {

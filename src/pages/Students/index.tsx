@@ -84,7 +84,7 @@ const Students = () => {
       let studentSort: any = [...studentsState];
       let newSort = studentSort.sort(function (a: any, b: any) {
         return (
-          new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+          new Date(a.user?.dateJoined).valueOf() - new Date(b.user?.dateJoined).valueOf()
         );
       });
       set_students(newSort);
@@ -192,7 +192,7 @@ const Students = () => {
         <TableCell>{student.user?.username}</TableCell>
         <TableCell>{student.approvalStatus}</TableCell>
         <TableCell>
-          {moment(student.createdAt).format('MM/DD/YY HH:MM A') || '-'}
+          {moment(student.user?.dateJoined).format('MM/DD/YY') || '-'}
         </TableCell>
         <TableCell align="right">
           <Button
@@ -247,7 +247,7 @@ const Students = () => {
     } else {
       filteredList = students.filter(
         (item: any) =>
-          item.name && item.name.toLowerCase().includes(filterTxt.toLowerCase())
+          item.user?.name && item.user?.name.toLowerCase().includes(filterTxt.toLowerCase())
       );
     }
     renderList = filteredList.map((student) => {
@@ -494,7 +494,7 @@ const Students = () => {
                   Created At: <br />
                   <b>
                     {activeStudent &&
-                      moment(activeStudent.createdAt).format(
+                      moment(activeStudent.user?.dateJoined).format(
                         'MM/DD/YY HH:MM A'
                       )}
                   </b>

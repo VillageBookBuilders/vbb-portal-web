@@ -51,6 +51,12 @@ const defaultForm = {
   notes: '',
   end_date: '',
   uniqueID: '',
+  user:{
+    firstName:'',
+    lastName:'',
+    email:'',
+    timeZone:''
+  }
 };
 
 const Mentors = () => {
@@ -58,6 +64,7 @@ const Mentors = () => {
   const navigate = useNavigate();
 
   const appState = useSelector((store: AppState) => store.appState);
+  const loading = useSelector((store: AppState) => store.appState.loading);
   const user = useSelector((store: AppState) => store.user);
   const mentorsState = useSelector((store: AppState) => store.library.mentors);
   const [activePaginationIndex, set_activePaginationIndex] = React.useState(1);
@@ -77,13 +84,14 @@ const Mentors = () => {
   const [activeMentor, set_activeMentor] = React.useState<any>(null);
   const [filterText, set_filterText] = React.useState<any>('');
   const [activeMentorStatus, set_activeMentorStatus] = React.useState<any>('');
+  const [libID, set_libID] = React.useState<any>('');
 
   React.useEffect(() => {
     if (mentorsState !== undefined && mentorsState !== null) {
       let mentorSort: any = [...mentorsState];
       let newSort = mentorSort.sort(function (a: any, b: any) {
         return (
-          new Date(a.createdAt).valueOf() - new Date(b.createdAt).valueOf()
+          new Date(a.user?.dateJoined).valueOf() - new Date(b.user?.dateJoined).valueOf()
         );
       });
       set_mentors(newSort);
@@ -95,21 +103,25 @@ const Mentors = () => {
       if (user.studentProfile.assignedLibrary) {
         var libraryID = user.studentProfile?.assignedLibrary.uniqueID;
         dispatch(getLibraryMentors(libraryID));
+        set_libID(libraryID)
       }
     } else if (user && user.role === 2 && user.mentorProfile) {
       if (user.mentorProfile.assignedLibrary) {
         var libraryID2 = user.mentorProfile.assignedLibrary.uniqueID;
         dispatch(getLibraryMentors(libraryID2));
+        set_libID(libraryID2)
       }
     } else if (user && user.role === 3 && user.advisorProfile) {
       if (user.advisorProfile.library) {
         var libraryID3 = user.advisorProfile.library.uniqueID;
         dispatch(getLibraryMentors(libraryID3));
+        set_libID(libraryID3)
       }
     } else if (user && user.role === 4 && user.librarianProfile) {
       if (user.librarianProfile.library) {
         var libraryID4 = user.librarianProfile.library.uniqueID;
         dispatch(getLibraryMentors(libraryID4));
+        set_libID(libraryID4)
       }
     }
   }, [user]);
@@ -211,7 +223,7 @@ const Mentors = () => {
               horizontal: 'left',
             }}
           >
-            <MenuItem onClick={() => handleToggleActiveMentorView(mentor.user)}>
+            <MenuItem onClick={() => handleToggleActiveMentorView(mentor)}>
               View/Edit...
             </MenuItem>
             <MenuItem onClick={() => handleToggleApproveMentorModal(mentor)}>
@@ -239,7 +251,7 @@ const Mentors = () => {
     } else {
       filteredList = mentors.filter(
         (item: any) =>
-          item.name && item.name.toLowerCase().includes(filterTxt.toLowerCase())
+          item.user?.name && item.user?.name.toLowerCase().includes(filterTxt.toLowerCase())
       );
     }
     renderList = filteredList.map((mentor) => {
@@ -280,7 +292,7 @@ const Mentors = () => {
   const handleChangeMentorStatus = (mentor: any, status: string) => {
     console.log(mentor);
     console.log(status);
-    dispatch(updateMentorStatus({ mentor_id: mentor.user.pk, status: status }));
+    dispatch(updateMentorStatus({ library_id: libID, mentor_id: mentor.user.pk, status: status }));
   };
 
   return (
@@ -381,7 +393,7 @@ const Mentors = () => {
                   <FormLabel>First Name</FormLabel>
                   <TextField
                     id="standard-basic"
-                    value={activeMentorForm.firstName}
+                    value={activeMentorForm.user.firstName}
                     multiline
                     rows={3}
                     onChange={(e) =>
@@ -400,7 +412,7 @@ const Mentors = () => {
                   <FormLabel>Last Name</FormLabel>
                   <TextField
                     id="standard-basic"
-                    value={activeMentorForm.lastName}
+                    value={activeMentorForm.user?.lastName}
                     multiline
                     rows={3}
                     onChange={(e) =>
@@ -419,7 +431,7 @@ const Mentors = () => {
                   <FormLabel>Email</FormLabel>
                   <TextField
                     id="standard-basic"
-                    value={activeMentorForm.email}
+                    value={activeMentorForm.user?.email}
                     onChange={(e) =>
                       set_activeMentorForm({
                         ...activeMentorForm,
@@ -435,7 +447,7 @@ const Mentors = () => {
                   <FormLabel>Timezone</FormLabel>
                   <TextField
                     id="standard-basic"
-                    value={activeMentorForm.timeZone}
+                    value={activeMentorForm.user?.timeZone}
                     onChange={(e) =>
                       set_activeMentorForm({
                         ...activeMentorForm,
@@ -465,9 +477,24 @@ const Mentors = () => {
                   Created At: <br />
                   <b>
                     {activeMentor &&
-                      moment(activeMentor.createdAt).format('MM/DD/YY HH:MM A')}
+                      moment(activeMentor.user?.dateJoined).format('MM/DD/YY HH:MM A')}
                   </b>
                 </Typography>
+                <br />
+                <br />
+                <Typography
+                  variant="body1"
+                  alignSelf="flex-start"
+                  color={scss_variables.primary_color}
+                >
+                  Assigned Library: <br />
+                  <b>
+                    {activeMentor && activeMentor.assignedLibrary &&
+                      `${activeMentor.assignedLibrary.name}`
+                    }
+                  </b>
+                </Typography>
+
                 <br />
                 <br />
                 <Typography
@@ -491,7 +518,7 @@ const Mentors = () => {
             </Grid>
             <Box display="flex" flexDirection="row" justifyContent="flex-end">
               <Button
-                onClick={() => handleToggleActiveMentorView(activeMentor.user)}
+                onClick={() => handleToggleActiveMentorView(activeMentor)}
                 variant="contained"
                 color="error"
                 sx={{ mt: 2 }}
@@ -545,7 +572,7 @@ const Mentors = () => {
                         id="standard-basic"
                         label="URL:"
                         variant="standard"
-                        value={activeMentor.applicationVideoUrl}
+                        value={activeMentor.applicationVideoUrl || 'No video link provided...'}
                       />
                     )}
                   </Grid>
@@ -557,11 +584,27 @@ const Mentors = () => {
 
                     {activeMentor ? (
                       <>
-                        {activeMentor.careers.map((career: any) => {
-                          return <Chip label={career.name} />;
-                        })}
+                        {activeMentor.careers.legnth > 0
+                          ? (
+                            <>
+                            {activeMentor.careers.map((career: any) => {
+                              return <Chip label={career.name} />;
+                            })}
+                            </>
+                          )
+                          : (
+                            <>
+                            <Typography variant="body1">
+                              No subjects selected...
+                            </Typography>
+                            </>
+                          )
+
+                        }
+
                       </>
                     ) : null}
+
                   </Grid>
 
                   <Grid item xs={12} sm={6} sx={{ mt: 2 }}>
@@ -571,11 +614,27 @@ const Mentors = () => {
 
                     {activeMentor ? (
                       <>
-                        {activeMentor.subjects.map((sub: any) => {
-                          return <Chip label={sub.name} />;
-                        })}
+                        {activeMentor.subjects.legnth > 0
+                          ? (
+                            <>
+                            {activeMentor.subjects.map((sub: any) => {
+                              return <Chip label={sub.name} />;
+                            })}
+                            </>
+                          )
+                          : (
+                            <>
+                            <Typography variant="body1">
+                              No subjects selected...
+                            </Typography>
+                            </>
+                          )
+
+                        }
+
                       </>
                     ) : null}
+
                   </Grid>
 
                   <Grid item xs={12} sm={6} sx={{ mt: 2 }}>
@@ -585,9 +644,24 @@ const Mentors = () => {
 
                     {activeMentor ? (
                       <>
-                        {activeMentor.mentoringLanguages?.map((lang: any) => {
-                          return <Chip label={lang.englishDisplayName} />;
-                        })}
+                        {activeMentor.mentoringLanguages.legnth > 0
+                          ? (
+                            <>
+                            {activeMentor.mentoringLanguages?.map((lang: any) => {
+                              return <Chip label={lang.englishDisplayName} />;
+                            })}
+                            </>
+                          )
+                          : (
+                            <>
+                            <Typography variant="body1">
+                              No mentoring languages selected...
+                            </Typography>
+                            </>
+                          )
+
+                        }
+
                       </>
                     ) : null}
                   </Grid>
@@ -599,18 +673,34 @@ const Mentors = () => {
 
                     {activeMentor ? (
                       <>
-                        {activeMentor.opportunities?.map((opp: any) => {
-                          return <Chip label={opp.name} />;
-                        })}
+                        {activeMentor.opportunities.legnth > 0
+                          ? (
+                            <>
+                            {activeMentor.opportunities?.map((opp: any) => {
+                              return <Chip label={opp.name} />;
+                            })}
+                            </>
+                          )
+                          : (
+                            <>
+                            <Typography variant="body1">
+                              No opportunities selected...
+                            </Typography>
+                            </>
+                          )
+
+                        }
+
                       </>
                     ) : null}
+
                   </Grid>
 
                   <Grid item xs={12} sm={6} sx={{ mt: 2 }}>
                     <Typography variant="h6">Timezone Is</Typography>
                     <Box display="flex" alignItems="center" mb={2}>
                       <Typography variant="body1">
-                        <b>{activeMentor && activeMentor.user?.timeZone}</b>
+                        <b>{activeMentor && activeMentor.user?.timeZone || 'No timezone selected...'}</b>
                       </Typography>
                     </Box>
                   </Grid>
@@ -623,7 +713,7 @@ const Mentors = () => {
                       </Typography>
                       <FormGroup></FormGroup>
                       <Typography variant="body1">
-                        <b>{activeMentor && activeMentor.meetProvider}</b>
+                        <b>{activeMentor && activeMentor.meetProvider || 'None'}</b>
                       </Typography>
                     </FormControl>
                   </Grid>
@@ -801,21 +891,22 @@ const Mentors = () => {
                     mt={2}
                   >
                     <TableContainer>
-                      <Table sx={{ minWidth: 650 }} aria-label="simple table">
-                        <TableHead>
-                          <TableRow>
-                            <TableCell>First Name</TableCell>
-                            <TableCell>Last Name</TableCell>
-                            <TableCell>Email</TableCell>
-                            <TableCell>Organization</TableCell>
-                            <TableCell>Status</TableCell>
-                            <TableCell>Created At</TableCell>
-                            <TableCell align="right">Action</TableCell>
-                          </TableRow>
-                        </TableHead>
-                        <TableBody>
-                          {mentors ? (
+
+                          {loading === false && mentors ? (
                             <>
+                            <Table sx={{ minWidth: 650 }} aria-label="simple table">
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>First Name</TableCell>
+                                <TableCell>Last Name</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Organization</TableCell>
+                                <TableCell>Status</TableCell>
+                                <TableCell>Created At</TableCell>
+                                <TableCell align="right">Action</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
                               {mentors.length > 0 ? (
                                 <>
                                   {renderMentors(
@@ -846,12 +937,12 @@ const Mentors = () => {
                                   <TableCell align="right">-</TableCell>
                                 </TableRow>
                               )}
+                              </TableBody>
+                              </Table>
                             </>
                           ) : (
                             <CircularProgress />
                           )}
-                        </TableBody>
-                      </Table>
                     </TableContainer>
                   </Box>
                   {mentors && (
