@@ -123,6 +123,16 @@ const Login = () => {
               >
                 Register As A Mentor
               </Button>
+              <Button
+                sx={{
+                  color: scss_variables.primary_color,
+                  textDecoration: 'underline',
+                }}
+                target="_blank" 
+                href="https://villagebookbuilders.org/sponsorprogram/"
+              >
+                Sponsor a Student
+              </Button>
             </div>
           </Paper>
         </Paper>
