@@ -119,10 +119,10 @@ const StudentOnboardForm = ({ handleSubmit }: OnboardProps) => {
     >
       <Grid container spacing={3}>
         <Grid item xs={12} sm={6}>
-          <Typography variant="h6">What year were you born?</Typography>
+          <Typography variant="h6">What is your date of birth?</Typography>
           <TextField
             id="standard-basic"
-            label="Year of Birth:"
+            type="date"
             variant="standard"
             required
             onChange={(e: any) =>
