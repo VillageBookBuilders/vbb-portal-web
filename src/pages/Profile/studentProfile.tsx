@@ -124,11 +124,11 @@ const StudentProfile = () => {
 
   function handleSubmit(e: any, form: any) {
     console.log(form);
-    //dispatch(updatestudentProfile(form));
+    dispatch(updateStudentProfile(form));
   }
 
   const handleSetTimezone = (timezone: string) => {
-    //setFormValue({ ...formValue, timezone: timezone });
+    setFormValue({ ...formValue, timezone: timezone });
   };
 
   const renderGradeLevelOptions = () => {

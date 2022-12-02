@@ -195,7 +195,7 @@ function App() {
         <Route
           path="/bookings"
           element={
-            <PrivateRoute roles={[Role.Student, Role.Mentor, Role.User]}>
+            <PrivateRoute roles={[Role.Mentor]}>
               <Bookings />
             </PrivateRoute>
           }
@@ -287,7 +287,7 @@ function App() {
         <Route
           path="/profile/"
           element={
-            <PrivateRoute roles={[Role.Student, Role.User, Role.Mentor]}>
+            <PrivateRoute roles={[Role.User, Role.Mentor]}>
               <Profile />
             </PrivateRoute>
           }

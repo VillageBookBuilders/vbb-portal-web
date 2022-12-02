@@ -2,7 +2,6 @@ import { Calendar, Views, luxonLocalizer, SlotInfo } from 'react-big-calendar';
 import { DateTime } from 'luxon';
 import { Box } from '@mui/material';
 import { useState } from 'react';
-import MentorBookingModal from './MentorBookingModal';
 import { CalendarEvent } from '../../utils/CalendarEvent';
 import {
   Person as PersonIcon,
@@ -91,7 +90,6 @@ const MentorBooking = () => {
         components={calendarComponents}
         formats={calendarFormats}
       />
-      <MentorBookingModal eventOrSlot={event} onClose={() => setEvent(null)} />
     </Box>
   );
 };

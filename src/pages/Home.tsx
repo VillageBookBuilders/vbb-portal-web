@@ -77,7 +77,7 @@ const Home = () => {
     } else if (user && user.role === 4 && user.librarianProfile) {
       if (user.librarianProfile.library) {
         var libraryID4 = user.librarianProfile.library.uniqueID;
-        dispatch(getUserComputerReservationSlots());
+        //dispatch(getUserComputerReservationSlots());
         dispatch(getLibraryAnnouncements(libraryID4));
         setActiveLibrary(user.librarianProfile.library);
       }

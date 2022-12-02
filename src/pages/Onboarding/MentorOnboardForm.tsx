@@ -11,6 +11,12 @@ import {
   Radio,
   RadioGroup,
   Checkbox,
+  InputLabel,
+  Select,
+  MenuItem,
+  Chip,
+  ListItemText,
+  OutlinedInput
 } from '@mui/material';
 
 import OpportunityDropdown from '../../components/shared/OpportunityDropdown';
@@ -29,11 +35,23 @@ import { BasicModal } from '../../components/Modals';
 import { OnboardProps } from '.';
 import moment from 'moment-timezone';
 
+const ITEM_HEIGHT = 48;
+const ITEM_PADDING_TOP = 8;
+const MenuProps = {
+  PaperProps: {
+    style: {
+      maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
+      width: 250,
+    },
+  },
+};
+
 const defaultForm = {
   careers: [] as number[],
   subjects: [] as number[],
   mentoringLanguages: [] as number[],
   // should be a list from all subjects in the backend
+  gender: '',
   applicationVideoUrl: '',
   meetProvider: '',
   corporateCode: '',
@@ -153,6 +171,40 @@ const MentorOnboardForm = ({ handleSubmit }: OnboardProps) => {
             }
           />
         </Grid>
+
+        <Grid item xs={12} sm={6} sx={{ mt: 5 }}>
+          <Typography variant="h6">What gender are you?</Typography>
+          <FormControl fullWidth>
+            <InputLabel id="demo-multiple-chip-label">Please Select</InputLabel>
+            <Select
+              labelId="demo-multiple-chip-label"
+              id="demo-multiple-chip"
+              required
+              value={formValue.gender}
+              onChange={(e: any) =>
+                setFormValue({ ...formValue, gender: e.target.value })
+              }
+              input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
+              renderValue={(selected: any) => (
+                <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
+                  <Chip key={selected} label={selected} />
+                </Box>
+              )}
+              MenuProps={MenuProps}
+            >
+              <MenuItem key={0} value={'Male'}>
+                <ListItemText primary={`Male`} />
+              </MenuItem>
+              <MenuItem key={1} value={'Female'}>
+                <ListItemText primary={`Female`} />
+              </MenuItem>
+              <MenuItem key={2} value={'Other'}>
+                <ListItemText primary={`Other`} />
+              </MenuItem>
+            </Select>
+          </FormControl>
+        </Grid>
+
         <Grid item xs={12} sm={6} sx={{ mt: 0 }}>
           <Typography variant="h6">Careers areas I’m interested in</Typography>
           <CareerDropdown

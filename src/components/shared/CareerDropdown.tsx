@@ -69,7 +69,7 @@ const CareerDropdown = ({
         onChange={handleSelect}
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((id) => (
+            {actvieCareerOptions.length > 0 && selected.map((id) => (
               <Chip
                 key={id}
                 label={actvieCareerOptions?.find((e: any) => e.id === id).name}

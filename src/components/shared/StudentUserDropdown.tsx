@@ -28,13 +28,13 @@ interface Props {
   defaultValue?: any;
 }
 
-const MentorUserDropdown = ({
+const StudentUserDropdown = ({
   selectedUser,
   handleSelectUser,
   isRequired,
   defaultValue,
 }: Props) => {
-  const users = useSelector((state: AppState) => state.library.mentors);
+  const users = useSelector((state: AppState) => state.library.students);
   const dispatch = useDispatch();
 
   const [actvieUserOptions, setActvieUserOptions] = useState<any>([]);
@@ -49,7 +49,7 @@ const MentorUserDropdown = ({
       users.forEach((element) => {
         tempArr.push({
           id: element.user?.pk,
-          name: `${element.user?.firstName} ${element.user?.lastName} - ${element.user?.email}`,
+          name: `${element.user?.firstName} ${element.user?.lastName} - ${element.user?.username}`,
           value: element.user?.pk,
         });
       });
@@ -83,4 +83,4 @@ const MentorUserDropdown = ({
   );
 };
 
-export default MentorUserDropdown;
+export default StudentUserDropdown;

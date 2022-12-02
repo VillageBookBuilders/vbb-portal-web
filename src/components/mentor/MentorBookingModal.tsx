@@ -24,12 +24,16 @@ import { useState } from 'react';
 
 interface EventModalProps {
   eventOrSlot: CalendarEvent | SlotInfo | null | SlotSessions;
+  selectedConferenceType:string;
+  set_selectedConferenceType:(value: string) => void;
+  selectedOpenReservationNotes:string;
+  set_selectedOpenReservationNotes:(value: string) => void;
   onClose: () => void;
 }
 
 const fakeStudents = ['Student 1', 'Student 2', 'Student 3'];
 
-const MentorBookingModal = ({ eventOrSlot, onClose }: EventModalProps) => {
+const MentorBookingModal = ({ eventOrSlot, onClose, selectedConferenceType, set_selectedConferenceType, selectedOpenReservationNotes, set_selectedOpenReservationNotes }: EventModalProps) => {
   const isEvent = isCalendarEvent(eventOrSlot);
   const [disable, setDisable] = useState<boolean>(true);
 
@@ -89,7 +93,11 @@ const MentorBookingModal = ({ eventOrSlot, onClose }: EventModalProps) => {
             row
             aria-labelledby="meeting-type"
             name="meetingType"
-            defaultValue="google-meet"
+            value={selectedConferenceType}
+            defaultValue="google"
+            onChange={(e:any) =>
+              set_selectedConferenceType(e.target.value)
+            }
           >
             <FormControlLabel
               value="ms-teams"
@@ -97,7 +105,7 @@ const MentorBookingModal = ({ eventOrSlot, onClose }: EventModalProps) => {
               label="Microsoft Teams"
             />
             <FormControlLabel
-              value="google-meet"
+              value="google"
               control={<Radio />}
               label="Google Meet"
             />
@@ -109,6 +117,10 @@ const MentorBookingModal = ({ eventOrSlot, onClose }: EventModalProps) => {
             multiline
             label="Notes"
             placeholder="Notes"
+            value={selectedOpenReservationNotes}
+            onChange={(e:any) =>
+              set_selectedOpenReservationNotes(e.target.value)
+            }
             InputProps={{ startAdornment: <Notes /> }}
           />
         </Grid>

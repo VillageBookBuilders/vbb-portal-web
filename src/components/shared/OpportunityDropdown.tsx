@@ -78,7 +78,7 @@ const OpportunityDropdown = ({
         input={<OutlinedInput id="select-multiple-chip" label="Chip" />}
         renderValue={(selected) => (
           <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 0.5 }}>
-            {selected.map((id) => (
+            {actvieOppOptions.length > 0 && selected.map((id) => (
               <Chip
                 key={id}
                 label={actvieOppOptions?.find((e: any) => e.id === id).name}

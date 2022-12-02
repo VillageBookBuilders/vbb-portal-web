@@ -71,6 +71,7 @@ export interface MentorOnboardingForm {
   applicationVideoUrl: string;
   phoneNumber: string;
   secondaryEmail: string;
+  gender:string;
   isOfAge: boolean;
   timezone: string;
   dateOfBirth: string;
