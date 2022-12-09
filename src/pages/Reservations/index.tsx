@@ -457,7 +457,11 @@ const Reservations = () => {
 
   const handleEditUserPrefSlot = (userPrefSlot: any) => {
     console.log(userPrefSlot)
-    let obj = { ...userPrefSlot, student: userPrefSlot?.student.id };
+    let stud:number | null = null
+    if (userPrefSlot.student && userPrefSlot?.student.id) {
+      stud = userPrefSlot?.student.id
+    }
+    let obj = { ...userPrefSlot, student: stud };
     console.log(obj);
     dispatch(updateLibraryUserSlot(obj, obj.uniqueID));
   };
